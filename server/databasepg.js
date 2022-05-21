@@ -1,4 +1,16 @@
 
+const getIsToWatchUrls = async function (pgClient){
+  const query1 = 'select * from isToWatch'
+
+  let urlsWithIsToWatch = await pgClient.query(query1)
+
+  if(!urlsWithIsToWatch){
+    return []
+  }
+
+  return urlsWithIsToWatch.rows
+}
+
 const getUrlsForCrawling = async function (pgClient){
   const query1 = 'select * from urlForCrawling'
 
@@ -96,4 +108,5 @@ module.exports = {
   changeIsToWatchChange,
   getProgramHistory,
   getUrlsForCrawling,
+  getIsToWatchUrls,
 };

@@ -74,20 +74,24 @@ const parseHtmlAndGetData = (html, pgClient, crawlingUrl) => {
 
 }
 
-const crawlAndUpsertPrograms = function (url, pgClient){  //url not working 
+const crawlAndUpsertPrograms = function (url, pgClient, urlsWithIsToWatch){  //url not working 
   var crawler = new Crawler(url);  //works !!!
   crawler.maxDepth = 2;
 
   crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
     const crawlingUrl = queueItem.url
-    fetchData(crawlingUrl).then( (res) => {
-      const html = res.data;
-
-      if(html.includes('Status') || html.includes('status')){
-        parseHtmlAndGetData(html, pgClient, crawlingUrl)
-        return; //so the website wont block me
-      }
-    })
+    
+    let urlWithIsToWatch = urlsWithIsToWatch.find(urlWithIsToWatch => urlWithIsToWatch.programurl == crawlingUrl)
+    if(!urlWithIsToWatch || urlWithIsToWatch.istowatch){
+      fetchData(crawlingUrl).then( (res) => {
+        const html = res.data;
+  
+        if(html.includes('Status') || html.includes('status')){
+          parseHtmlAndGetData(html, pgClient, crawlingUrl)
+          return; //so the website wont block me
+        }
+      })
+    }
   });
 
   crawler.start()
@@ -95,14 +99,21 @@ const crawlAndUpsertPrograms = function (url, pgClient){  //url not working
 
 exports.crawlAndUpsertPrograms = crawlAndUpsertPrograms
 
-exports.getUrlsAndStartCrawling = function (pgClient) {
-  db.getUrlsForCrawling(pgClient).then(urls => {
-    urls.forEach(url => {
-      crawlAndUpsertPrograms(url.url, pgClient);
+exports.getUrlsAndStartCrawling = async function (pgClient) {
+  let urlsForCrawling  = await db.getUrlsForCrawling(pgClient)
+  let urlsWithIsToWatch = await db.getIsToWatchUrls(pgClient)
 
-      setInterval(() => {
-        crawlAndUpsertPrograms(url.url, pgClient);
-      }, 60 * 60 * 1000);   //EVERY 5 MIN
-    });
+  urlsForCrawling.forEach(url => {
+    crawlAndUpsertPrograms(url.url, pgClient, urlsWithIsToWatch);
   });
+
+  setInterval(async () => {
+    let urlsForCrawling2  = await db.getUrlsForCrawling(pgClient)
+    let urlsWithIsToWatch2 = await db.getIsToWatchUrls(pgClient)
+
+    urlsForCrawling2.forEach(url => {
+      crawlAndUpsertPrograms(url.url, pgClient, urlsWithIsToWatch2);
+    })
+  }, 60 * 60 * 1000);   //EVERY 1 HOUR
+
 }
