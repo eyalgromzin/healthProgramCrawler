@@ -10,6 +10,7 @@ const AppJsx = () => {
   const [history, setHistory] = useState([])
   const [isShowHistory, setIsShowHistory] = useState(false)
 
+  //could use redux and update state , but its too much boiler plate
   const getPrograms = useCallback(() => {
     fetch('/api/getPrograms')
     .then(response => response.json())
@@ -18,22 +19,9 @@ const AppJsx = () => {
       setPrograms(sortedPrograms)
     })
   }, [])
-  
-  // not working - dont have time to check it 
-  const changeTableRowToggle = (url, isWatchChange) => {
 
-    const newTableData = JSON.parse(JSON.stringify(programs)) //already []
-    
-    newTableData.forEach(row => {
-      if(row.url === url){
-        row.isWatchChange = isWatchChange
-      }
-    });
-
-    setPrograms(newTableData)
-  }
-
-  const changeIsToWatchChange = useCallback(async (url, isToWatch) => {
+  //could use redux and update state , but its too much boiler plate
+  const changeIsToWatchChange = useCallback(async (url, isToWatch, onSuccess, onFail) => {
     let res = await fetch('/api/changeIsToWatchChange', {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       // mode: 'cors',
@@ -43,14 +31,13 @@ const AppJsx = () => {
     .then(response => response.json())
 
     if(res.success){
-      // changeTableRowToggle(url, isToWatch)  //here its already empty
-      getPrograms() //need to fix this, change this to 'changeTableRowToggle' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      getPrograms() //due to a bug and a lack of time, getting programs instead of updating state.  
     }  else{
       alert('error')
     }
-    
   }, [])
 
+  //could use redux and update state , but its too much boiler plate
   const fetchHistory = useCallback((url) => {
     fetch('/api/fetchHistory', {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -83,7 +70,7 @@ const AppJsx = () => {
               changeIsToWatchChange={changeIsToWatchChange} onRowClick={onRowClick} /> }
 
         </div>
-        { isShowHistory && <div> 
+        { isShowHistory && history && history.length > 0 ? <div> 
           <div style={{marginTop: 40}}> history </div>
           <div className='tableContainer'>
             <ProgramsTable programs={history} changeIsToWatchChange={changeIsToWatchChange} 
@@ -91,7 +78,10 @@ const AppJsx = () => {
               isShowWatchUpdates={false}
               /> 
           </div>
-        </div>}
+        </div>
+        :
+        programs && programs.length && 'no history yet'
+        }
       </div>
 
 }
