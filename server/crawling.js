@@ -74,7 +74,7 @@ const parseHtmlAndGetData = (html, pgClient, crawlingUrl) => {
 
 }
 
-exports.crawlAndUpsertPrograms = function (url, pgClient){  //url not working 
+const crawlAndUpsertPrograms = function (url, pgClient){  //url not working 
   //crawling done here
   // var crawler = new Crawler('​https://www.healthwellfoundation.org/disease-funds');
   
@@ -120,3 +120,15 @@ exports.crawlAndUpsertPrograms = function (url, pgClient){  //url not working
   crawler.start()
 }
 
+exports.crawlAndUpsertPrograms = crawlAndUpsertPrograms
+
+
+exports.getUrlsAndStartCrawling = function (pgClient) {
+  db.getUrlsForCrawling(pgClient).then(urls => {
+    urls.forEach(url => {
+      setInterval(() => {
+        crawlAndUpsertPrograms(url, pgClient);
+      }, 5 * 1000);
+    });
+  });
+}

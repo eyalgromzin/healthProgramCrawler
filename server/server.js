@@ -24,10 +24,16 @@ const {crawlAndUpsertPrograms} = require('./crawling')
 
 const {addRoutes} = require('./routes')
 
+const db = require('./databasepg')
+
+const crawler = require('./crawling')
+
 addRoutes(app, pgClient)
 
-setInterval(() => {
-  crawlAndUpsertPrograms('​https://www.healthwellfoundation.org/disease-funds', pgClient)
-}, 5 * 1000);
+
+//jsut update the db for urls for new urls
+crawler.getUrlsAndStartCrawling(pgClient);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+

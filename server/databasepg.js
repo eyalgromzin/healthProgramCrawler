@@ -1,4 +1,15 @@
 
+const getUrlsForCrawling = async function (pgClient){
+  const query1 = 'select * from urlForCrawling'
+
+  let urls = await pgClient.query(query1)
+
+  if(!urls){
+    return []
+  }
+
+  return urls.rows
+}
 
 const getAllPrograms = async function (pgClient){
   console.log('in getAllPrograms')
@@ -85,4 +96,5 @@ module.exports = {
   addProgram, 
   changeIsToWatchChange,
   getProgramHistory,
+  getUrlsForCrawling,
 };
