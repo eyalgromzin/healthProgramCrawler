@@ -46,7 +46,7 @@ const ProgramsTable = ({programs, changeIsToWatchChange, onRowClick, isShowHisto
                   inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </TableCell>}
-                {isShowHistoryButton && <TableCell onClick={(e) => {onRowClick(program)}}>history</TableCell>}
+                {isShowHistoryButton && <TableCell onClick={(e) => {onRowClick(program)}}>show history</TableCell>}
                 
               </TableRow>
             ))}
