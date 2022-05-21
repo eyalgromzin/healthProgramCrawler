@@ -50,10 +50,6 @@ const addProgram = async function (pgClient, program){
 
   const isProgramExists = existingPrograms?.length > 0
 
-  const promises = []
-
-  let promise
-
   //add another row only if data is different 
   if(isProgramExists && existingPrograms[0].isOpenStatus != program.isOpenStatus){
 
@@ -62,15 +58,18 @@ const addProgram = async function (pgClient, program){
     await setProgramToBeHisotry(pgClient, programToSetHistory)
   }
 
+  //worked
   const programIsOpenStatus = program.isOpenStatus.toString().toLowerCase() == 'true' ? '1' : '0' 
-
-  //works
+  
   const insertQuery = `insert into programs (foundationName, programName, eligibleTreatments, isOpenStatus, grantAmount, url, isHistory) values ` + 
   `('${program.foundationName}', '${program.programName}', ARRAY [${program.eligibleTreatments}], '${programIsOpenStatus}', ${program.grantAmount}, '${program.url}', '0')`  //works
 
+  //for testing 
+  // const insertQuery = `insert into programs (foundationName) values ('111')`  //works
+
   await pgClient.query(insertQuery) //await for testing  , need to change to promise
 
-  console.log('added program')
+  console.log('added program----------------------------------')
 
   //if its a new parsed url , add it to isToWatch table
   if(!isProgramExists){

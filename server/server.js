@@ -5,7 +5,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const {Client} = require('pg')
-const { database } = require('pg/lib/defaults')
+// const { database } = require('pg/lib/defaults')
 
 const pgClient = new Client({
   host: 'tyke.db.elephantsql.com',
@@ -29,7 +29,6 @@ const db = require('./databasepg')
 const crawler = require('./crawling')
 
 addRoutes(app, pgClient)
-
 
 //jsut update the db for urls for new urls
 crawler.getUrlsAndStartCrawling(pgClient);
