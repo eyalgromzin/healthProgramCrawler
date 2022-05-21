@@ -1,0 +1,18 @@
+.App {
+  text-align: center;
+}
+
+.button{
+  padding: 20px;
+  border: solid;
+  border-radius: 5px;
+  border-color: darkolivegreen;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tableContainer{
+  width: 700px;
+  height: 400px;
+  margin: 50px auto;
+}
