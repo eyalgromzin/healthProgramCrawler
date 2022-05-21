@@ -28,9 +28,14 @@ const setProgramToBeHisotry = async function (pgClient, program){
 const addProgram = async function (pgClient, program){
   console.log('in addProgram')
 
-  const getProgramQuery = `select * from programs where programUrl = ${program.url}`
+  // let fixedProgramUrl = program.url.replace(':', '')
+  // let fixedProgramUrl = program.url.replace('https://', '')
+
+  const getProgramQuery = `select * from programs where url = '${program.url}' and isOpenStatus='${program.isOpenStatus}' and isHistory='0'`
   
-  const existingPrograms = await pgClient.query(getProgramQuery).rows
+  let  existingPrograms = await pgClient.query(getProgramQuery)
+
+  existingPrograms = existingPrograms.rows
 
   const isProgramExists = existingPrograms?.length > 0
 
@@ -38,30 +43,31 @@ const addProgram = async function (pgClient, program){
 
   let promise
 
-  if(isProgramExists){
-    promise = setProgramToBeHisotry(program)
+  //add another row only if data is different 
+  if(isProgramExists && existingPrograms[0].isOpenStatus != program.isOpenStatus){
 
-    promises.push(promise)
+    const programToSet0 = existingPrograms[0]
+
+    await setProgramToBeHisotry(pgClient, programToSet0)
   }
 
-  const insertQuery = `insert into programs (url, foundationName, programName, eligibleTreatments, isOpenStatus, grantAmount, url, isHistory)
-  values (${program.foundationName}, ${program.programName}, ARRAY [${program.eligibleTreatments}], 
-    ${program.isOpenStatus}, ${program.grantAmount}, ${program.url}, false)`
+  const programIsOpenStatus = program.isOpenStatus.toString().toLowerCase() == 'true' ? '1' : '0' 
 
-  promise = pgClient.query(insertQuery)
+  //works
+  const insertQuery = `insert into programs (foundationName, programName, eligibleTreatments, isOpenStatus, grantAmount, url, isHistory) values ` + 
+  `('${program.foundationName}', '${program.programName}', ARRAY [${program.eligibleTreatments}], '${programIsOpenStatus}', ${program.grantAmount}, '${program.url}', '0')`  //works
 
-  promises.push(promise)
+  await pgClient.query(insertQuery) //await for testing  , need to change to promise
 
+  console.log('added program')
+
+  //if its a new parsed url , add it to isToWatch table
   if(!isProgramExists){
-    const addIsToWatchQuery = `insert into isToWatchTable (programUrl, isToWatch)
-    values (${program.url}, true)`
+    const addIsToWatchQuery = `insert into isToWatch (programUrl, isToWatch)
+    values ('${program.url}', '1')`
   
-    promise = pgClient.query(addIsToWatchQuery)
-
-    promises.push(promise)
-  }
-
-  await Promise.all(promises)  
+    await pgClient.query(addIsToWatchQuery)
+  } 
 }
 
 const getProgramHistory = async function (pgClient, url){

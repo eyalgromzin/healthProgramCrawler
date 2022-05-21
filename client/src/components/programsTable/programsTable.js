@@ -33,7 +33,7 @@ const ProgramsTable = ({programs, changeIsToWatchChange, onRowClick, isShowHisto
               >
                 <TableCell component="th" scope="row">{program.foundationname}</TableCell>
                 <TableCell>{program.programname}</TableCell>
-                <TableCell>{program.eligibletreatments.join(', ')}</TableCell>
+                <TableCell>{program.eligibletreatments && program.eligibletreatments.join(', ')}</TableCell>
                 <TableCell>{program.isopenstatus ? 'True' : 'false'}</TableCell>
                 <TableCell>{program.grantamount}</TableCell>
                 {isShowWatchUpdates && <TableCell>

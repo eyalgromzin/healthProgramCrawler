@@ -28,6 +28,6 @@ addRoutes(app, pgClient)
 
 setInterval(() => {
   crawlAndUpsertPrograms('​https://www.healthwellfoundation.org/disease-funds', pgClient)
-}, 60 * 1000);
+}, 5 * 1000);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
