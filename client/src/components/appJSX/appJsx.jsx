@@ -60,7 +60,8 @@ const AppJsx = () => {
     })
     .then(response => response.json())
     .then(programsData => {      
-      setHistory(programsData.history)
+      let sorted = programsData.history.sort((a,b) => a.id - b.id)
+      setHistory(sorted)
       
       setIsShowHistory(true)
     })

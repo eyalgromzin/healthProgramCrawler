@@ -57,9 +57,9 @@ const addProgram = async function (pgClient, program){
   //add another row only if data is different 
   if(isProgramExists && existingPrograms[0].isOpenStatus != program.isOpenStatus){
 
-    const programToSet0 = existingPrograms[0]
+    const programToSetHistory = existingPrograms[0]
 
-    await setProgramToBeHisotry(pgClient, programToSet0)
+    await setProgramToBeHisotry(pgClient, programToSetHistory)
   }
 
   const programIsOpenStatus = program.isOpenStatus.toString().toLowerCase() == 'true' ? '1' : '0' 
