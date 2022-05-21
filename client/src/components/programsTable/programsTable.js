@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 
-const ProgramsTable = ({programs, changeIsToWatchChange, onRowClick}) => {
+const ProgramsTable = ({programs, changeIsToWatchChange, onRowClick, isShowHistoryButton=true, isShowWatchUpdates=true}) => {
   return (
     // <div style={{display: 'inline-block'}}>
       <TableContainer component={Paper}>
@@ -20,7 +20,7 @@ const ProgramsTable = ({programs, changeIsToWatchChange, onRowClick}) => {
               <TableCell>eligible treatments</TableCell>
               <TableCell>status</TableCell>
               <TableCell>amount</TableCell>
-              <TableCell>is watch updates</TableCell>
+              {isShowWatchUpdates && <TableCell>is watch updates</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -28,7 +28,7 @@ const ProgramsTable = ({programs, changeIsToWatchChange, onRowClick}) => {
               <TableRow
                 key={program.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                onClick={() => onRowClick(program)}
+                // onClick={() => onRowClick(program)}
                 hover={true}
               >
                 <TableCell component="th" scope="row">{program.foundationname}</TableCell>
@@ -36,13 +36,18 @@ const ProgramsTable = ({programs, changeIsToWatchChange, onRowClick}) => {
                 <TableCell>{program.eligibletreatments.join(', ')}</TableCell>
                 <TableCell>{program.isopenstatus ? 'True' : 'false'}</TableCell>
                 <TableCell>{program.grantamount}</TableCell>
-                <TableCell>
+                {isShowWatchUpdates && <TableCell>
                   <Checkbox
                   checked={program.istowatch}
-                  onChange={() => changeIsToWatchChange(program.url, !program.istowatch)}
+                  onChange={(e) => {
+                    e.stopPropagation()
+                    changeIsToWatchChange(program.url, !program.istowatch)
+                  }}
                   inputProps={{ 'aria-label': 'controlled' }}
                   />
-                </TableCell>
+                </TableCell>}
+                {isShowHistoryButton && <TableCell onClick={(e) => {onRowClick(program)}}>history</TableCell>}
+                
               </TableRow>
             ))}
           </TableBody>

@@ -43,7 +43,7 @@ const getProgramHistory = async (req, res, pgClient) => {
   try{
     const url = req.body.url;
     
-    const history = db.getProgramHistory(pgClient, url);
+    const history = await db.getProgramHistory(pgClient, url);
 
     res.send({ history });
   }catch(e){

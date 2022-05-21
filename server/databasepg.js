@@ -10,9 +10,9 @@ const getAllPrograms = async function (pgClient){
 
 const changeIsToWatchChange = async function (pgClient, url, isToWatch){
   console.log('in changeIsToWatchChange')
+  const query = `update isToWatch SET isToWatch = '${isToWatch}' where programUrl = '${url}'`
   // const query = `update isToWatch SET isToWatch = '${isToWatch}' where programUrl = '${url}'`
-  // const query = `update isToWatch SET isToWatch = '${isToWatch}' where programUrl = '${url}'`
-  const query = `select * from istotatch`
+  // const query = `select * from istowatch`
   const res = await pgClient.query(query)
   let s = 4
 }
@@ -67,7 +67,7 @@ const addProgram = async function (pgClient, program){
 const getProgramHistory = async function (pgClient, url){
   console.log('in getProgramHistory')
 
-  const query = `select * from programs where isHistory = true and url = ${url}`
+  const query = `select * from programs where isHistory = true and url = '${url}'`
 
   const res = await pgClient.query(query)
 

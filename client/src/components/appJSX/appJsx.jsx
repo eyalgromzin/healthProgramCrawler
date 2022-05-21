@@ -44,7 +44,7 @@ const AppJsx = () => {
 
     if(res.success){
       // changeTableRowToggle(url, isToWatch)  //here its already empty
-      getPrograms()
+      getPrograms() //need to fix this, change this to 'changeTableRowToggle' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }  else{
       alert('error')
     }
@@ -60,7 +60,7 @@ const AppJsx = () => {
     })
     .then(response => response.json())
     .then(programsData => {      
-      setHistory(programsData.programs)
+      setHistory(programsData.history)
       
       setIsShowHistory(true)
     })
@@ -85,7 +85,10 @@ const AppJsx = () => {
         { isShowHistory && <div> 
           <div style={{marginTop: 40}}> history </div>
           <div className='tableContainer'>
-            <ProgramsTable programs={history} changeIsToWatchChange={changeIsToWatchChange} /> 
+            <ProgramsTable programs={history} changeIsToWatchChange={changeIsToWatchChange} 
+              isShowHistoryButton={false} 
+              isShowWatchUpdates={false}
+              /> 
           </div>
         </div>}
       </div>
